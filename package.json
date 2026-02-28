@@ -1,11 +1,11 @@
 {
   "name": "commandlint",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "AI 커맨드를 위한 Linter — 모호성을 검출하고 결정론성을 높인다",
   "type": "module",
   "main": "dist/src/index.js",
   "bin": {
-    "commandlint": "./dist/cli/index.js"
+    "commandlint": "dist/cli/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
+    "chokidar": "^5.0.0",
     "commander": "^12.0.0",
     "js-yaml": "^4.1.0"
   },

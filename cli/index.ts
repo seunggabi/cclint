@@ -7,6 +7,8 @@ import { resolve, join, relative } from 'path';
 import { lint, lintWithFix, DEFAULT_CONFIG, loadConfig } from '../src/index.js';
 import { runInteractive } from '../src/interactive/index.js';
 import { runClaudeSuggest, printClaudeCommand } from '../src/suggest/index.js';
+import { runWatch } from '../src/watch/index.js';
+import { runInit } from '../src/init/index.js';
 import type { LintResult, FixSuggestion, CommandLintConfig } from '../src/index.js';
 
 const program = new Command();
@@ -24,6 +26,7 @@ program
   .option('-i, --interactive', '문제마다 선택지를 제공하는 인터랙티브 모드')
   .option('-s, --suggest', 'claude -p 로 AI 개선안 실행 (claude CLI 필요)')
   .option('--suggest-print', 'claude -p 명령어를 출력만 (실행 안 함)')
+  .option('-w, --watch', '파일 변경 감시 후 자동 re-lint')
   .option('--json', 'JSON 형식으로 출력')
   .option('--ext <exts>', 'lint 대상 확장자 (기본: md)', 'md')
   .action(async (
@@ -33,6 +36,7 @@ program
       interactive: boolean;
       suggest: boolean;
       suggestPrint: boolean;
+      watch: boolean;
       json: boolean;
       ext: string;
     }
@@ -41,6 +45,13 @@ program
 
     // .commandlintrc 자동 로드
     const config = loadConfig();
+
+    // ── watch 모드 ────────────────────────────────────────────────────────
+    if (opts.watch) {
+      const dir = (target && isDirectory(target)) ? target : '.';
+      runWatch(dir, { exts, config, fix: opts.fix });
+      return; // watch는 blocking — 종료까지 반환 안 함
+    }
 
     // ── 디렉토리 or '.' → md 파일 재귀 lint ──────────────────────────────
     if (!target || target === '.' || isDirectory(target)) {
@@ -331,5 +342,15 @@ function printFix(fix: FixSuggestion): void {
   console.log(chalk.dim('수정 후 예상 Score: ') + chalk.green.bold(`${fix.scoreAfterFix}/10`));
   console.log('');
 }
+
+// ─── commandlint init ─────────────────────────────────────────────────────────
+
+program
+  .command('init')
+  .description('.commandlintrc 생성 + pre-commit hook 설치')
+  .option('--force', '기존 .commandlintrc 덮어쓰기')
+  .action(async (opts: { force: boolean }) => {
+    await runInit({ force: opts.force });
+  });
 
 program.parse();

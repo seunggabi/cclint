@@ -1,4 +1,0 @@
-{"timestamp":"2026-02-28T19:33:02.000Z","cwd":"/Users/seunggabi/sg/claude-lint","tool":"UserPrompt","command":"되도록 명확하지 않으면 선택지를 재공해서 수정할수 있게 해줘야해 auto fix 도 괜찮고 guide 제공도 괜찮고 sh or py or js 로 실행해주고 claude -p output 으로 ","status":"success"}
-{"timestamp":"2026-02-28T20:01:10.000Z","cwd":"/Users/seunggabi/sg/claude-lint","tool":"UserPrompt","command":"설치형이어야 할거 같고 black 처럼 혹은 ","status":"success"}
-{"timestamp":"2026-02-28T20:01:54.000Z","cwd":"/Users/seunggabi/sg/claude-lint","tool":"UserPrompt","command":"dir 에서 . 하면 md 파일 위주로 린트 해주는거야 ","status":"success"}
-{"timestamp":"2026-02-28T20:04:39.000Z","cwd":"/Users/seunggabi/sg/claude-lint","tool":"UserPrompt","command":"최선이야 ? 더 강화할수 있나 명확하게 ? ","status":"success"}

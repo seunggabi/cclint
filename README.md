@@ -1,0 +1,274 @@
+# CommandLint
+
+**AI 커맨드를 위한 Linter — 모호성을 검출하고 결정론성을 높인다.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/seunggabi/commandlint?style=social)](https://github.com/seunggabi/commandlint/stargazers)
+[![npm](https://img.shields.io/npm/v/commandlint?color=red)](https://www.npmjs.com/package/commandlint)
+[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js)](https://nodejs.org)
+
+---
+
+## 왜 CommandLint인가?
+
+AI 코딩 에이전트에게 자연어로 지시를 내릴 때, **같은 커맨드를 줘도 매번 다른 결과**가 나온다.
+
+```
+f("커밋 메시지 잘 작성해줘") → 실행 1: 영어로 작성
+f("커밋 메시지 잘 작성해줘") → 실행 2: 한국어로 작성
+f("커밋 메시지 잘 작성해줘") → 실행 3: 본문 없이 제목만
+```
+
+같은 입력에 다른 출력 — 이러면 이 위에 더 큰 시스템을 안정적으로 쌓을 수 없다.
+
+**CommandLint**는 AI 커맨드의 모호성을 검출하고 결정론성(Determinism)을 높인다.
+ESLint가 JS 코드를, Black이 Python 코드를 정리하듯이.
+
+---
+
+## 설치
+
+### npm (권장)
+
+```bash
+npm install -g commandlint
+```
+
+### npx (설치 없이 바로 사용)
+
+```bash
+npx commandlint "커밋 메시지 잘 작성해줘"
+```
+
+### curl
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/seunggabi/commandlint/main/install.sh | bash
+```
+
+---
+
+## 빠른 시작
+
+```bash
+# 단일 커맨드 검증
+commandlint "커밋 메시지 잘 작성해줘"
+
+# 자동 수정 제안
+commandlint --fix "테스트 코드 작성해줘"
+
+# 현재 디렉토리 .md 파일 전체 lint (CLAUDE.md, AGENTS.md 등)
+commandlint .
+
+# 특정 파일 lint
+commandlint CLAUDE.md
+
+# 인터랙티브 모드 — 문제마다 선택지 제공
+commandlint --interactive "모든 파일 정리해줘"
+
+# Claude AI 개선안 출력
+commandlint --suggest-print "커밋 메시지 잘 작성해줘"
+```
+
+---
+
+## 동작 예시
+
+### 기본 lint
+
+```bash
+$ commandlint "커밋 메시지 잘 작성해줘"
+
+────────────────────────────────────────────────────────────
+CommandLint v0.1.0
+────────────────────────────────────────────────────────────
+입력: "커밋 메시지 잘 작성해줘"
+
+❌  "잘" — 정량 기준 없음  (ambiguous-qualifier)
+     → "잘"는 해석이 실행마다 달라질 수 있습니다.
+⚠️   language 미지정  (missing-constraint)
+⚠️   format 미지정  (missing-constraint)
+⚠️   max-length 미지정  (missing-constraint)
+
+Determinism Score: 4/10 🔴 — 매번 다른 결과
+```
+
+### --fix 자동 수정
+
+```bash
+$ commandlint --fix "커밋 메시지 잘 작성해줘"
+
+# ... lint 결과 ...
+
+자동 수정 제안 (--fix)
+────────────────────────────────────────────────────────────
+→ commit:
+    language: ko
+    format: conventional-commits
+    max-length: '72'
+
+수정 후 예상 Score: 10/10
+```
+
+### --interactive 선택지 모드
+
+```bash
+$ commandlint --interactive "커밋 메시지 잘 작성해줘"
+
+⚠️ language 미지정
+  1) ko (한국어)
+  2) en (영어)
+  3) Claude에게 제안 받기 (claude -p)
+  4) 직접 입력
+선택 (1-4): 1
+```
+
+### .md 파일 전체 lint
+
+```bash
+$ commandlint .
+
+CommandLint v0.1.0
+디렉토리: /your/project
+대상 파일: 3개 (*.md)
+
+CLAUDE.md
+  L3: ❌ ambiguous-qualifier: "깔끔하게" — 정량 기준 없음
+  L7: ❌ conflicting-rules: "간결하게" vs "상세하게" — 규칙 충돌
+  L12: ⚠️  missing-constraint: format 미지정
+
+✖ 2 error, 1 warning (3개 파일 검사)
+```
+
+---
+
+## Determinism Score
+
+| 점수 | 의미 | 상태 |
+|------|------|------|
+| 9-10 | 거의 순수 함수 수준 | 🟢 매번 같은 결과 |
+| 7-8  | 대부분 예측 가능 | 🟡 minor 차이만 |
+| 5-6  | 결과가 상당히 달라질 수 있음 | 🟠 |
+| 3-4  | 매번 다른 결과 | 🔴 |
+| 1-2  | 랜덤에 가까움 | ⛔ |
+
+Score는 **확률 기반 불확실성 전파 모델**로 계산됩니다:
+
+```
+P_deterministic = Π(1 - u_i)
+Score = 10 × P_deterministic
+```
+
+각 규칙 위반은 독립 사건으로, 위반이 누적될수록 Score가 급격히 하락합니다.
+
+---
+
+## 규칙 (Rules)
+
+| Rule ID | 설명 | 기본값 |
+|---------|------|--------|
+| `ambiguous-qualifier` | "잘", "적절히" 등 모호한 수식어 | error |
+| `missing-constraint` | 도메인별 필수 제약 조건 누락 | warn |
+| `conflicting-rules` | "간결하게" vs "상세하게" 등 충돌 | error |
+| `implicit-assumption` | "기존처럼", "알아서" 등 암묵적 전제 | warn |
+| `unbounded-scope` | "모든 파일" 등 범위 무제한 | warn |
+| `no-subjective-criterion` | "예쁘게", "우아하게" 등 주관적 기준 | warn |
+| `vague-quantifier` | "많은", "빠른" 등 모호한 수량 표현 | warn |
+| `no-rollback-plan` | 삭제/배포 작업에 롤백 계획 없음 | warn |
+
+---
+
+## 설정 (.commandlintrc)
+
+프로젝트 루트에 `.commandlintrc` 파일을 만들면 규칙을 커스텀할 수 있습니다.
+
+```yaml
+rules:
+  ambiguous-qualifier: error     # error | warn | off
+  missing-constraint: warn
+  conflicting-rules: error
+  implicit-assumption: warn
+  unbounded-scope: warn
+  no-subjective-criterion: warn
+  vague-quantifier: warn
+  no-rollback-plan: warn
+
+custom:
+  language: ko                   # 이 언어는 missing-constraint에서 제외
+  domains:
+    deploy:
+      required: [environment, strategy, rollback-plan]
+```
+
+우선순위: `./commandlintrc` > `./.commandlintrc` > `~/.commandlintrc`
+
+---
+
+## Claude AI 통합
+
+`--suggest-print` 플래그로 Claude에게 개선안을 요청하는 명령어를 출력합니다:
+
+```bash
+$ commandlint --suggest-print "테스트 코드 작성해줘"
+
+claude -p '다음 AI 커맨드에서 아래 문제들이 감지되었습니다.
+원본 커맨드: "테스트 코드 작성해줘"
+감지된 문제:
+- framework 미지정 (missing-constraint)
+- coverage 미지정 (missing-constraint)
+...'
+```
+
+`claude` CLI가 설치된 경우 `--suggest`로 직접 실행할 수도 있습니다.
+
+---
+
+## CLI 옵션
+
+```
+commandlint [target] [options]
+
+Arguments:
+  target          커맨드 문자열, 파일 경로, 또는 디렉토리 (기본: 현재 디렉토리)
+
+Options:
+  -f, --fix           자동 수정 제안 생성
+  -i, --interactive   문제마다 선택지를 제공하는 인터랙티브 모드
+  -s, --suggest       claude -p 로 AI 개선안 실행
+  --suggest-print     claude -p 명령어 출력 (실행 안 함)
+  --json              JSON 형식으로 출력
+  --ext <exts>        lint 대상 확장자 (기본: md)
+  -V, --version       버전 출력
+  -h, --help          도움말
+```
+
+---
+
+## 왜 중요한가
+
+AI 에이전트가 **파이프라인의 한 단계**로 쓰이는 시대에, 각 단계의 커맨드가 불순 함수이면 오류가 곱셈으로 전파됩니다:
+
+```
+불확실성 0.7 × 0.7 × 0.7 = 0.343
+```
+
+커맨드의 결정론성을 높이는 것은 **AI 기반 소프트웨어 엔지니어링의 신뢰성 기반**을 만드는 일입니다.
+
+---
+
+## Contributing
+
+[CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
+
+```bash
+git clone https://github.com/seunggabi/commandlint.git
+cd commandlint
+npm install
+npm run build
+```
+
+---
+
+## License
+
+[MIT](LICENSE) © [seunggabi](https://github.com/seunggabi)

@@ -1,0 +1,7 @@
+rules:
+  ambiguous-qualifier: error
+  missing-constraint: warn
+  conflicting-rules: error
+  implicit-assumption: warn
+  unbounded-scope: warn
+  no-subjective-criterion: warn

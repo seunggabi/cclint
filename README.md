@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![GitHub Stars](https://img.shields.io/github/stars/seunggabi/cclint?style=social)](https://github.com/seunggabi/cclint/stargazers)
-[![npm](https://img.shields.io/npm/v/cclint?color=red)](https://www.npmjs.com/package/cclint)
+[![npm](https://img.shields.io/npm/v/%40seunggabi%2Fcclint?color=red)](https://www.npmjs.com/package/@seunggabi/cclint)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js)](https://nodejs.org)
 
 ---
@@ -31,13 +31,13 @@ ESLint가 JS 코드를, Black이 Python 코드를 정리하듯이.
 ### npm (권장)
 
 ```bash
-npm install -g cclint
+npm install -g @seunggabi/cclint
 ```
 
 ### npx (설치 없이 바로 사용)
 
 ```bash
-npx cclint "커밋 메시지 잘 작성해줘"
+npx @seunggabi/cclint "커밋 메시지 잘 작성해줘"
 ```
 
 ### curl
@@ -63,11 +63,17 @@ cclint .
 # 특정 파일 lint
 cclint CLAUDE.md
 
+# 파일 감시 모드 — 저장 시 자동 re-lint
+cclint --watch .
+
 # 인터랙티브 모드 — 문제마다 선택지 제공
 cclint --interactive "모든 파일 정리해줘"
 
 # Claude AI 개선안 출력
 cclint --suggest-print "커밋 메시지 잘 작성해줘"
+
+# 프로젝트 초기화 (.cclintrc 생성 + pre-commit hook)
+cclint init
 ```
 
 ---
@@ -80,7 +86,7 @@ cclint --suggest-print "커밋 메시지 잘 작성해줘"
 $ cclint "커밋 메시지 잘 작성해줘"
 
 ────────────────────────────────────────────────────────────
-CcLint v0.1.0
+CcLint v0.3.0
 ────────────────────────────────────────────────────────────
 입력: "커밋 메시지 잘 작성해줘"
 
@@ -128,7 +134,7 @@ $ cclint --interactive "커밋 메시지 잘 작성해줘"
 ```bash
 $ cclint .
 
-CcLint v0.1.0
+CcLint v0.3.0
 디렉토리: /your/project
 대상 파일: 3개 (*.md)
 
@@ -236,10 +242,14 @@ Options:
   -i, --interactive   문제마다 선택지를 제공하는 인터랙티브 모드
   -s, --suggest       claude -p 로 AI 개선안 실행
   --suggest-print     claude -p 명령어 출력 (실행 안 함)
+  -w, --watch         파일 변경 감시 후 자동 re-lint
   --json              JSON 형식으로 출력
   --ext <exts>        lint 대상 확장자 (기본: md)
   -V, --version       버전 출력
   -h, --help          도움말
+
+Commands:
+  init [--force]      .cclintrc 생성 + pre-commit hook 설치
 ```
 
 ---

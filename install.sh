@@ -27,7 +27,7 @@ fi
 
 print_info "CcLint 설치 중..."
 
-npm install -g cclint
+npm install -g @seunggabi/cclint
 
 print_info "✅ CcLint 설치 완료!"
 echo ""

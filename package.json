@@ -1,6 +1,6 @@
 {
   "name": "@seunggabi/cclint",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "AI 커맨드를 위한 Linter — 모호성을 검출하고 결정론성을 높인다",
   "type": "module",
   "main": "dist/src/index.js",

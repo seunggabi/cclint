@@ -11,6 +11,7 @@ const CONSTRAINT_HINTS: Record<string, string> = {
   environment: '환경을 명시하세요 (예: "production", "staging")',
   strategy: '전략을 명시하세요 (예: "blue-green", "rolling")',
   scope: '범위를 명시하세요 (예: "auth 모듈")',
+  style: '코드 스타일을 명시하세요 (예: "eslint-airbnb", "prettier")',
   pattern: '패턴을 명시하세요 (예: "factory method")',
   'source-language': '원본 언어를 명시하세요 (예: "한국어")',
   'target-language': '번역 대상 언어를 명시하세요 (예: "영어")',

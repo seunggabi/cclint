@@ -9,16 +9,16 @@ import { runInteractive } from '../src/interactive/index.js';
 import { runClaudeSuggest, printClaudeCommand } from '../src/suggest/index.js';
 import { runWatch } from '../src/watch/index.js';
 import { runInit } from '../src/init/index.js';
-import type { LintResult, FixSuggestion, CommandLintConfig } from '../src/index.js';
+import type { LintResult, FixSuggestion, CcLintConfig } from '../src/index.js';
 
 const program = new Command();
 
 program
-  .name('commandlint')
+  .name('cclint')
   .description('AI 커맨드를 위한 Linter — 모호성을 검출하고 결정론성을 높인다')
   .version('0.1.0');
 
-// ─── commandlint [command|path] ───────────────────────────────────────────────
+// ─── cclint [command|path] ───────────────────────────────────────────────
 
 program
   .argument('[target]', '커맨드 문자열, 파일, 또는 디렉토리 (기본: 현재 디렉토리)')
@@ -43,7 +43,7 @@ program
   ) => {
     const exts = opts.ext.split(',').map(e => e.trim().replace(/^\./, ''));
 
-    // .commandlintrc 자동 로드
+    // .cclintrc 자동 로드
     const config = loadConfig();
 
     // ── watch 모드 ────────────────────────────────────────────────────────
@@ -104,7 +104,7 @@ async function lintDirectory(
   dir: string,
   exts: string[],
   opts: { fix: boolean; suggestPrint: boolean },
-  config: CommandLintConfig = DEFAULT_CONFIG
+  config: CcLintConfig = DEFAULT_CONFIG
 ): Promise<void> {
   const mdFiles = collectFiles(dir, exts);
 
@@ -114,7 +114,7 @@ async function lintDirectory(
   }
 
   console.log('');
-  console.log(chalk.bold('CommandLint') + chalk.dim(' v0.1.0'));
+  console.log(chalk.bold('CcLint') + chalk.dim(' v0.1.0'));
   console.log(chalk.dim(`디렉토리: ${dir}`));
   console.log(chalk.dim(`대상 파일: ${mdFiles.length}개 (*.${exts.join(', *.')})`));
   console.log('');
@@ -173,7 +173,7 @@ interface FileLineResult {
   fix: FixSuggestion | null | undefined;
 }
 
-function lintMarkdownFile(filePath: string, config: CommandLintConfig = DEFAULT_CONFIG): FileLineResult[] {
+function lintMarkdownFile(filePath: string, config: CcLintConfig = DEFAULT_CONFIG): FileLineResult[] {
   const content = readFileSync(filePath, 'utf-8');
   const lines = content.split('\n');
   const results: FileLineResult[] = [];
@@ -220,7 +220,7 @@ function isCommandLike(line: string): boolean {
 
 // ─── 단일 파일 lint ───────────────────────────────────────────────────────────
 
-async function lintFile(filePath: string, opts: { fix: boolean; suggestPrint: boolean }, config: CommandLintConfig = DEFAULT_CONFIG): Promise<void> {
+async function lintFile(filePath: string, opts: { fix: boolean; suggestPrint: boolean }, config: CcLintConfig = DEFAULT_CONFIG): Promise<void> {
   console.log(chalk.bold.underline(filePath));
   const results = lintMarkdownFile(filePath, config);
 
@@ -304,7 +304,7 @@ async function handleClaudeSuggest(input: string, result: LintResult, execute: b
 function printResult(result: LintResult): void {
   console.log('');
   console.log(chalk.dim('─'.repeat(60)));
-  console.log(chalk.bold('CommandLint') + chalk.dim(' v0.1.0'));
+  console.log(chalk.bold('CcLint') + chalk.dim(' v0.1.0'));
   console.log(chalk.dim('─'.repeat(60)));
   console.log(chalk.dim('입력: ') + chalk.italic(`"${result.command}"`));
   console.log('');
@@ -343,12 +343,12 @@ function printFix(fix: FixSuggestion): void {
   console.log('');
 }
 
-// ─── commandlint init ─────────────────────────────────────────────────────────
+// ─── cclint init ─────────────────────────────────────────────────────────
 
 program
   .command('init')
-  .description('.commandlintrc 생성 + pre-commit hook 설치')
-  .option('--force', '기존 .commandlintrc 덮어쓰기')
+  .description('.cclintrc 생성 + pre-commit hook 설치')
+  .option('--force', '기존 .cclintrc 덮어쓰기')
   .action(async (opts: { force: boolean }) => {
     await runInit({ force: opts.force });
   });

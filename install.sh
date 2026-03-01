@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# CommandLint installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/seunggabi/commandlint/main/install.sh | bash
+# CcLint installer
+# Usage: curl -fsSL https://raw.githubusercontent.com/seunggabi/cclint/main/install.sh | bash
 
 set -e
 
@@ -25,15 +25,15 @@ if [ "$NODE_MAJOR" -lt 18 ]; then
   exit 1
 fi
 
-print_info "CommandLint 설치 중..."
+print_info "CcLint 설치 중..."
 
-npm install -g commandlint
+npm install -g cclint
 
-print_info "✅ CommandLint 설치 완료!"
+print_info "✅ CcLint 설치 완료!"
 echo ""
 echo "사용법:"
-echo '  commandlint "커밋 메시지 잘 작성해줘"'
-echo '  commandlint --fix "테스트 코드 작성해줘"'
-echo "  commandlint .                           # 현재 디렉토리 .md 파일 lint"
+echo '  cclint "커밋 메시지 잘 작성해줘"'
+echo '  cclint --fix "테스트 코드 작성해줘"'
+echo "  cclint .                           # 현재 디렉토리 .md 파일 lint"
 echo ""
-echo "자세한 내용: https://github.com/seunggabi/commandlint"
+echo "자세한 내용: https://github.com/seunggabi/cclint"

@@ -1,10 +1,10 @@
-# Contributing to CommandLint
+# Contributing to CcLint
 
 ## 개발 환경 설정
 
 ```bash
-git clone https://github.com/seunggabi/commandlint.git
-cd commandlint
+git clone https://github.com/seunggabi/cclint.git
+cd cclint
 npm install
 npm run build
 ```
@@ -14,7 +14,7 @@ npm run build
 ```bash
 # 전역 링크로 테스트
 npm link
-commandlint "커밋 메시지 잘 작성해줘"
+cclint "커밋 메시지 잘 작성해줘"
 ```
 
 ## 새 규칙 추가
@@ -54,7 +54,7 @@ export const myRule: Rule = {
 
 ## 버그 리포트
 
-[GitHub Issues](https://github.com/seunggabi/commandlint/issues)에 아래 내용을 포함해 주세요:
+[GitHub Issues](https://github.com/seunggabi/cclint/issues)에 아래 내용을 포함해 주세요:
 - 입력 커맨드
 - 기대한 결과
 - 실제 결과

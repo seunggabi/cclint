@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// CommandLint — AI 커맨드 Linter (standalone JS runner)
+// CcLint — AI 커맨드 Linter (standalone JS runner)
 // 사용법:
-//   node commandlint.js "커밋 메시지 잘 작성해줘"
-//   node commandlint.js --fix "테스트 코드 작성해줘"
-//   node commandlint.js --interactive "모든 파일 정리해줘"
-//   node commandlint.js --suggest-print "커밋 메시지 잘 작성해줘"
+//   node cclint.js "커밋 메시지 잘 작성해줘"
+//   node cclint.js --fix "테스트 코드 작성해줘"
+//   node cclint.js --interactive "모든 파일 정리해줘"
+//   node cclint.js --suggest-print "커밋 메시지 잘 작성해줘"
 
 import { spawnSync, execSync } from 'child_process';
 import { existsSync } from 'fs';

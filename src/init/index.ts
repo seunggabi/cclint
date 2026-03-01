@@ -2,7 +2,7 @@ import * as readline from 'readline';
 import { writeFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import yaml from 'js-yaml';
-import type { CommandLintConfig, RuleConfig, RuleId } from '../types.js';
+import type { CcLintConfig, RuleConfig, RuleId } from '../types.js';
 
 // ─── 인터랙티브 init ──────────────────────────────────────────────────────────
 
@@ -15,14 +15,14 @@ async function ask(rl: readline.Interface, question: string): Promise<string> {
 }
 
 export async function runInit(opts: InitOptions = {}): Promise<void> {
-  const rcPath = resolve('.commandlintrc');
+  const rcPath = resolve('.cclintrc');
 
   if (existsSync(rcPath) && !opts.force) {
-    console.log(`⚠️  .commandlintrc 파일이 이미 존재합니다. 덮어쓰려면 --force 플래그를 사용하세요.`);
+    console.log(`⚠️  .cclintrc 파일이 이미 존재합니다. 덮어쓰려면 --force 플래그를 사용하세요.`);
     return;
   }
 
-  console.log('\n🔧 CommandLint 프로젝트 초기화\n');
+  console.log('\n🔧 CcLint 프로젝트 초기화\n');
 
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
@@ -50,8 +50,8 @@ export async function runInit(opts: InitOptions = {}): Promise<void> {
   const config = buildConfig(strictAnswer.trim(), language);
   const configYaml = yaml.dump(config, { indent: 2 });
 
-  writeFileSync(rcPath, `# CommandLint Configuration\n# https://github.com/seunggabi/commandlint\n\n${configYaml}`);
-  console.log(`\n✅ .commandlintrc 생성 완료`);
+  writeFileSync(rcPath, `# CcLint Configuration\n# https://github.com/seunggabi/cclint\n\n${configYaml}`);
+  console.log(`\n✅ .cclintrc 생성 완료`);
 
   // pre-commit hook 설치
   if (installHook) {
@@ -59,12 +59,12 @@ export async function runInit(opts: InitOptions = {}): Promise<void> {
   }
 
   console.log('\n시작하기:');
-  console.log('  commandlint .                     # 현재 디렉토리 lint');
-  console.log('  commandlint "커밋 메시지 잘 써줘"  # 단일 커맨드 lint');
-  console.log('  commandlint --watch .             # 파일 감시 모드');
+  console.log('  cclint .                     # 현재 디렉토리 lint');
+  console.log('  cclint "커밋 메시지 잘 써줘"  # 단일 커맨드 lint');
+  console.log('  cclint --watch .             # 파일 감시 모드');
 }
 
-function buildConfig(strictLevel: string, language: string): Omit<CommandLintConfig, 'custom'> & { custom: { language: string } } {
+function buildConfig(strictLevel: string, language: string): Omit<CcLintConfig, 'custom'> & { custom: { language: string } } {
   const ruleIds: RuleId[] = [
     'ambiguous-qualifier', 'missing-constraint', 'conflicting-rules',
     'implicit-assumption', 'unbounded-scope', 'no-subjective-criterion',
@@ -105,15 +105,15 @@ function installPreCommitHook(): void {
   }
 
   const hookContent = `#!/usr/bin/env bash
-# CommandLint pre-commit hook
-# https://github.com/seunggabi/commandlint
+# CcLint pre-commit hook
+# https://github.com/seunggabi/cclint
 
-if command -v commandlint &>/dev/null; then
-  commandlint . --ext md
+if command -v cclint &>/dev/null; then
+  cclint . --ext md
   if [ $? -ne 0 ]; then
     echo ""
-    echo "❌ CommandLint: 모호한 커맨드가 감지되었습니다."
-    echo "   commandlint --fix . 로 자동 수정하거나 직접 수정 후 커밋하세요."
+    echo "❌ CcLint: 모호한 커맨드가 감지되었습니다."
+    echo "   cclint --fix . 로 자동 수정하거나 직접 수정 후 커밋하세요."
     exit 1
   fi
 fi

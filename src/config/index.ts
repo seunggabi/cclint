@@ -2,11 +2,11 @@ import { existsSync, readFileSync } from 'fs';
 import { resolve, join } from 'path';
 import { homedir } from 'os';
 import yaml from 'js-yaml';
-import type { CommandLintConfig, RuleId, RuleConfig, CustomConfig } from '../types.js';
+import type { CcLintConfig, RuleId, RuleConfig, CustomConfig } from '../types.js';
 import { DEFAULT_CONFIG } from '../types.js';
 
-// ─── .commandlintrc 로더 ────────────────────────────────────────────────────
-// 우선순위: ./commandlintrc > ./.commandlintrc > ~/.commandlintrc
+// ─── .cclintrc 로더 ────────────────────────────────────────────────────
+// 우선순위: ./cclintrc > ./.cclintrc > ~/.cclintrc
 
 interface RawConfig {
   rules?: Record<string, string>;
@@ -17,9 +17,9 @@ interface RawConfig {
 }
 
 const CONFIG_SEARCH_PATHS = [
-  (cwd: string) => join(cwd, 'commandlintrc'),
-  (cwd: string) => join(cwd, '.commandlintrc'),
-  () => join(homedir(), '.commandlintrc'),
+  (cwd: string) => join(cwd, 'cclintrc'),
+  (cwd: string) => join(cwd, '.cclintrc'),
+  () => join(homedir(), '.cclintrc'),
 ];
 
 export function findConfigPath(cwd: string = process.cwd()): string | null {
@@ -30,7 +30,7 @@ export function findConfigPath(cwd: string = process.cwd()): string | null {
   return null;
 }
 
-export function loadConfig(cwd: string = process.cwd()): CommandLintConfig {
+export function loadConfig(cwd: string = process.cwd()): CcLintConfig {
   const configPath = findConfigPath(cwd);
   if (!configPath) return DEFAULT_CONFIG;
 
@@ -45,7 +45,7 @@ export function loadConfig(cwd: string = process.cwd()): CommandLintConfig {
   }
 }
 
-function mergeConfig(raw: RawConfig): CommandLintConfig {
+function mergeConfig(raw: RawConfig): CcLintConfig {
   const rules: Partial<Record<RuleId, RuleConfig>> = { ...DEFAULT_CONFIG.rules };
 
   if (raw.rules) {
@@ -56,7 +56,7 @@ function mergeConfig(raw: RawConfig): CommandLintConfig {
     }
   }
 
-  const config: CommandLintConfig = { rules };
+  const config: CcLintConfig = { rules };
 
   if (raw.custom) {
     config.custom = {

@@ -83,12 +83,12 @@ export interface CustomConfig {
   domains?: Record<string, { required: string[] }>;
 }
 
-export interface CommandLintConfig {
+export interface CcLintConfig {
   rules: Partial<Record<RuleId, RuleConfig>>;
   custom?: CustomConfig;
 }
 
-export const DEFAULT_CONFIG: CommandLintConfig = {
+export const DEFAULT_CONFIG: CcLintConfig = {
   rules: {
     'ambiguous-qualifier': 'error',
     'missing-constraint': 'warn',

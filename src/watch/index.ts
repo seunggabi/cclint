@@ -4,13 +4,13 @@ import yaml from 'js-yaml';
 import { readFileSync } from 'fs';
 import { relative, resolve } from 'path';
 import { lintWithFix } from '../index.js';
-import type { CommandLintConfig, LintResult, FixSuggestion } from '../types.js';
+import type { CcLintConfig, LintResult, FixSuggestion } from '../types.js';
 
 // ─── Watch 모드 ───────────────────────────────────────────────────────────────
 
 export interface WatchOptions {
   exts: string[];
-  config: CommandLintConfig;
+  config: CcLintConfig;
   fix: boolean;
 }
 
@@ -25,7 +25,7 @@ export function runWatch(dir: string, opts: WatchOptions): void {
   const patterns = opts.exts.map(ext => `${absDir}/**/*.${ext}`);
 
   console.log('');
-  console.log(chalk.bold('CommandLint') + chalk.dim(' v0.1.1 — watch mode'));
+  console.log(chalk.bold('CcLint') + chalk.dim(' v0.1.1 — watch mode'));
   console.log(chalk.dim(`감시 중: ${absDir} (*.${opts.exts.join(', *.')})`));
   console.log(chalk.dim('파일이 저장되면 자동으로 lint합니다. Ctrl+C로 종료.\n'));
 
@@ -81,7 +81,7 @@ function lintFile(filePath: string, baseDir: string, opts: WatchOptions, event: 
   console.log(`\n✖ ${errTxt}, ${warnTxt}`);
 }
 
-function lintMarkdownFile(filePath: string, config: CommandLintConfig): FileLineResult[] {
+function lintMarkdownFile(filePath: string, config: CcLintConfig): FileLineResult[] {
   let content: string;
   try { content = readFileSync(filePath, 'utf-8'); } catch { return []; }
 

@@ -1,4 +1,4 @@
-import type { Rule, CommandAST, LintMessage, CommandLintConfig, RuleId } from '../types.js';
+import type { Rule, CommandAST, LintMessage, CcLintConfig, RuleId } from '../types.js';
 import { ambiguousQualifierRule } from './built-in/ambiguous-qualifier.js';
 import { missingConstraintRule } from './built-in/missing-constraint.js';
 import { conflictingRulesRule } from './built-in/conflicting-rules.js';
@@ -19,7 +19,7 @@ export const BUILT_IN_RULES: Rule[] = [
   noRollbackPlanRule,
 ];
 
-export function runRules(ast: CommandAST, config: CommandLintConfig): LintMessage[] {
+export function runRules(ast: CommandAST, config: CcLintConfig): LintMessage[] {
   const messages: LintMessage[] = [];
 
   for (const rule of BUILT_IN_RULES) {

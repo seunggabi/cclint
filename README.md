@@ -1,15 +1,15 @@
-# CommandLint
+# CcLint
 
 **AI 커맨드를 위한 Linter — 모호성을 검출하고 결정론성을 높인다.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![GitHub Stars](https://img.shields.io/github/stars/seunggabi/commandlint?style=social)](https://github.com/seunggabi/commandlint/stargazers)
-[![npm](https://img.shields.io/npm/v/commandlint?color=red)](https://www.npmjs.com/package/commandlint)
+[![GitHub Stars](https://img.shields.io/github/stars/seunggabi/cclint?style=social)](https://github.com/seunggabi/cclint/stargazers)
+[![npm](https://img.shields.io/npm/v/cclint?color=red)](https://www.npmjs.com/package/cclint)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js)](https://nodejs.org)
 
 ---
 
-## 왜 CommandLint인가?
+## 왜 CcLint인가?
 
 AI 코딩 에이전트에게 자연어로 지시를 내릴 때, **같은 커맨드를 줘도 매번 다른 결과**가 나온다.
 
@@ -21,7 +21,7 @@ f("커밋 메시지 잘 작성해줘") → 실행 3: 본문 없이 제목만
 
 같은 입력에 다른 출력 — 이러면 이 위에 더 큰 시스템을 안정적으로 쌓을 수 없다.
 
-**CommandLint**는 AI 커맨드의 모호성을 검출하고 결정론성(Determinism)을 높인다.
+**CcLint**는 AI 커맨드의 모호성을 검출하고 결정론성(Determinism)을 높인다.
 ESLint가 JS 코드를, Black이 Python 코드를 정리하듯이.
 
 ---
@@ -31,19 +31,19 @@ ESLint가 JS 코드를, Black이 Python 코드를 정리하듯이.
 ### npm (권장)
 
 ```bash
-npm install -g commandlint
+npm install -g cclint
 ```
 
 ### npx (설치 없이 바로 사용)
 
 ```bash
-npx commandlint "커밋 메시지 잘 작성해줘"
+npx cclint "커밋 메시지 잘 작성해줘"
 ```
 
 ### curl
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/seunggabi/commandlint/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/seunggabi/cclint/main/install.sh | bash
 ```
 
 ---
@@ -52,22 +52,22 @@ curl -fsSL https://raw.githubusercontent.com/seunggabi/commandlint/main/install.
 
 ```bash
 # 단일 커맨드 검증
-commandlint "커밋 메시지 잘 작성해줘"
+cclint "커밋 메시지 잘 작성해줘"
 
 # 자동 수정 제안
-commandlint --fix "테스트 코드 작성해줘"
+cclint --fix "테스트 코드 작성해줘"
 
 # 현재 디렉토리 .md 파일 전체 lint (CLAUDE.md, AGENTS.md 등)
-commandlint .
+cclint .
 
 # 특정 파일 lint
-commandlint CLAUDE.md
+cclint CLAUDE.md
 
 # 인터랙티브 모드 — 문제마다 선택지 제공
-commandlint --interactive "모든 파일 정리해줘"
+cclint --interactive "모든 파일 정리해줘"
 
 # Claude AI 개선안 출력
-commandlint --suggest-print "커밋 메시지 잘 작성해줘"
+cclint --suggest-print "커밋 메시지 잘 작성해줘"
 ```
 
 ---
@@ -77,10 +77,10 @@ commandlint --suggest-print "커밋 메시지 잘 작성해줘"
 ### 기본 lint
 
 ```bash
-$ commandlint "커밋 메시지 잘 작성해줘"
+$ cclint "커밋 메시지 잘 작성해줘"
 
 ────────────────────────────────────────────────────────────
-CommandLint v0.1.0
+CcLint v0.1.0
 ────────────────────────────────────────────────────────────
 입력: "커밋 메시지 잘 작성해줘"
 
@@ -96,7 +96,7 @@ Determinism Score: 4/10 🔴 — 매번 다른 결과
 ### --fix 자동 수정
 
 ```bash
-$ commandlint --fix "커밋 메시지 잘 작성해줘"
+$ cclint --fix "커밋 메시지 잘 작성해줘"
 
 # ... lint 결과 ...
 
@@ -113,7 +113,7 @@ $ commandlint --fix "커밋 메시지 잘 작성해줘"
 ### --interactive 선택지 모드
 
 ```bash
-$ commandlint --interactive "커밋 메시지 잘 작성해줘"
+$ cclint --interactive "커밋 메시지 잘 작성해줘"
 
 ⚠️ language 미지정
   1) ko (한국어)
@@ -126,9 +126,9 @@ $ commandlint --interactive "커밋 메시지 잘 작성해줘"
 ### .md 파일 전체 lint
 
 ```bash
-$ commandlint .
+$ cclint .
 
-CommandLint v0.1.0
+CcLint v0.1.0
 디렉토리: /your/project
 대상 파일: 3개 (*.md)
 
@@ -178,9 +178,9 @@ Score = 10 × P_deterministic
 
 ---
 
-## 설정 (.commandlintrc)
+## 설정 (.cclintrc)
 
-프로젝트 루트에 `.commandlintrc` 파일을 만들면 규칙을 커스텀할 수 있습니다.
+프로젝트 루트에 `.cclintrc` 파일을 만들면 규칙을 커스텀할 수 있습니다.
 
 ```yaml
 rules:
@@ -200,7 +200,7 @@ custom:
       required: [environment, strategy, rollback-plan]
 ```
 
-우선순위: `./commandlintrc` > `./.commandlintrc` > `~/.commandlintrc`
+우선순위: `./cclintrc` > `./.cclintrc` > `~/.cclintrc`
 
 ---
 
@@ -209,7 +209,7 @@ custom:
 `--suggest-print` 플래그로 Claude에게 개선안을 요청하는 명령어를 출력합니다:
 
 ```bash
-$ commandlint --suggest-print "테스트 코드 작성해줘"
+$ cclint --suggest-print "테스트 코드 작성해줘"
 
 claude -p '다음 AI 커맨드에서 아래 문제들이 감지되었습니다.
 원본 커맨드: "테스트 코드 작성해줘"
@@ -226,7 +226,7 @@ claude -p '다음 AI 커맨드에서 아래 문제들이 감지되었습니다.
 ## CLI 옵션
 
 ```
-commandlint [target] [options]
+cclint [target] [options]
 
 Arguments:
   target          커맨드 문자열, 파일 경로, 또는 디렉토리 (기본: 현재 디렉토리)
@@ -261,8 +261,8 @@ AI 에이전트가 **파이프라인의 한 단계**로 쓰이는 시대에, 각
 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
 
 ```bash
-git clone https://github.com/seunggabi/commandlint.git
-cd commandlint
+git clone https://github.com/seunggabi/cclint.git
+cd cclint
 npm install
 npm run build
 ```

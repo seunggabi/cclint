@@ -3,7 +3,12 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import yaml from 'js-yaml';
 import { readdirSync, statSync, existsSync, readFileSync } from 'fs';
-import { resolve, join, relative } from 'path';
+import { resolve, join, relative, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const _pkg = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf-8')) as { version: string };
+const VERSION = `v${_pkg.version}`;
 import { lint, lintWithFix, DEFAULT_CONFIG, loadConfig } from '../src/index.js';
 import { runInteractive } from '../src/interactive/index.js';
 import { runClaudeSuggest, printClaudeCommand } from '../src/suggest/index.js';
@@ -16,7 +21,7 @@ const program = new Command();
 program
   .name('cclint')
   .description('AI 커맨드를 위한 Linter — 모호성을 검출하고 결정론성을 높인다')
-  .version('0.1.0');
+  .version(VERSION);
 
 // ─── cclint [command|path] ───────────────────────────────────────────────
 
@@ -114,7 +119,7 @@ async function lintDirectory(
   }
 
   console.log('');
-  console.log(chalk.bold('CcLint') + chalk.dim(' v0.1.0'));
+  console.log(chalk.bold('CcLint') + chalk.dim(` ${VERSION}`));
   console.log(chalk.dim(`디렉토리: ${dir}`));
   console.log(chalk.dim(`대상 파일: ${mdFiles.length}개 (*.${exts.join(', *.')})`));
   console.log('');
@@ -304,7 +309,7 @@ async function handleClaudeSuggest(input: string, result: LintResult, execute: b
 function printResult(result: LintResult): void {
   console.log('');
   console.log(chalk.dim('─'.repeat(60)));
-  console.log(chalk.bold('CcLint') + chalk.dim(' v0.1.0'));
+  console.log(chalk.bold('CcLint') + chalk.dim(` ${VERSION}`));
   console.log(chalk.dim('─'.repeat(60)));
   console.log(chalk.dim('입력: ') + chalk.italic(`"${result.command}"`));
   console.log('');

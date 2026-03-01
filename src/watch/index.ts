@@ -2,7 +2,12 @@ import chokidar from 'chokidar';
 import chalk from 'chalk';
 import yaml from 'js-yaml';
 import { readFileSync } from 'fs';
-import { relative, resolve } from 'path';
+import { relative, resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const _pkg = JSON.parse(readFileSync(resolve(__dirname, '../../../package.json'), 'utf-8')) as { version: string };
+const VERSION = `v${_pkg.version}`;
 import { lintWithFix } from '../index.js';
 import type { CcLintConfig, LintResult, FixSuggestion } from '../types.js';
 
@@ -25,7 +30,7 @@ export function runWatch(dir: string, opts: WatchOptions): void {
   const patterns = opts.exts.map(ext => `${absDir}/**/*.${ext}`);
 
   console.log('');
-  console.log(chalk.bold('CcLint') + chalk.dim(' v0.1.1 — watch mode'));
+  console.log(chalk.bold('CcLint') + chalk.dim(` ${VERSION} — watch mode`));
   console.log(chalk.dim(`감시 중: ${absDir} (*.${opts.exts.join(', *.')})`));
   console.log(chalk.dim('파일이 저장되면 자동으로 lint합니다. Ctrl+C로 종료.\n'));
 

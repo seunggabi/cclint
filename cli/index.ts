@@ -7,13 +7,33 @@ import { resolve, join, relative, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const _pkg = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf-8')) as { version: string };
+
+// package.json 경로: tsx dev에서는 ../package.json, dist에서는 ../../package.json
+function getPackageJson(): { version: string } {
+  const paths = [
+    resolve(__dirname, '../package.json'),    // tsx cli/index.ts 실행 시
+    resolve(__dirname, '../../package.json'), // npm bin 실행 시 (dist/cli/index.js)
+  ];
+
+  for (const path of paths) {
+    try {
+      return JSON.parse(readFileSync(path, 'utf-8')) as { version: string };
+    } catch {
+      continue;
+    }
+  }
+
+  throw new Error('package.json을 찾을 수 없습니다');
+}
+
+const _pkg = getPackageJson();
 const VERSION = `v${_pkg.version}`;
 import { lint, lintWithFix, DEFAULT_CONFIG, loadConfig } from '../src/index.js';
 import { runInteractive } from '../src/interactive/index.js';
 import { runClaudeSuggest, printClaudeCommand } from '../src/suggest/index.js';
 import { runWatch } from '../src/watch/index.js';
 import { runInit } from '../src/init/index.js';
+import { analyzeCodification, formatCodificationResult } from '../src/codification/index.js';
 import type { LintResult, FixSuggestion, CcLintConfig } from '../src/index.js';
 
 const program = new Command();
@@ -32,6 +52,7 @@ program
   .option('-s, --suggest', 'claude -p 로 AI 개선안 실행 (claude CLI 필요)')
   .option('--suggest-print', 'claude -p 명령어를 출력만 (실행 안 함)')
   .option('-w, --watch', '파일 변경 감시 후 자동 re-lint')
+  .option('--codify', 'Codification 분석만 실행 (코드화 가능성 분석)')
   .option('--json', 'JSON 형식으로 출력')
   .option('--ext <exts>', 'lint 대상 확장자 (기본: md)', 'md')
   .action(async (
@@ -42,6 +63,7 @@ program
       suggest: boolean;
       suggestPrint: boolean;
       watch: boolean;
+      codify: boolean;
       json: boolean;
       ext: string;
     }
@@ -56,6 +78,28 @@ program
       const dir = (target && isDirectory(target)) ? target : '.';
       runWatch(dir, { exts, config, fix: opts.fix });
       return; // watch는 blocking — 종료까지 반환 안 함
+    }
+
+    // ── codify 모드 (코드화 가능성 분석) ──────────────────────────────────
+    if (opts.codify) {
+      if (!target) {
+        console.error(chalk.red('❌ 프롬프트를 입력해주세요'));
+        console.error(chalk.dim('사용법: cclint --codify "프롬프트"'));
+        process.exit(1);
+      }
+      try {
+        const result = analyzeCodification(target);
+        if (opts.json) {
+          console.log(JSON.stringify(result, null, 2));
+        } else {
+          console.log(chalk.bold('CcLint') + chalk.dim(` v${_pkg.version}`));
+          console.log(formatCodificationResult(result));
+        }
+      } catch (error) {
+        console.error(chalk.red(`❌ ${error instanceof Error ? error.message : String(error)}`));
+        process.exit(1);
+      }
+      return;
     }
 
     // ── 디렉토리 or '.' → md 파일 재귀 lint ──────────────────────────────

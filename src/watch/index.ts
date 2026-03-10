@@ -6,7 +6,26 @@ import { relative, resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const _pkg = JSON.parse(readFileSync(resolve(__dirname, '../../../package.json'), 'utf-8')) as { version: string };
+
+// package.json 경로: tsx src/watch/index.ts에서는 ../../package.json, dist에서는 ../../../package.json
+function getPackageJson(): { version: string } {
+  const paths = [
+    resolve(__dirname, '../../package.json'),   // tsx src/watch/index.ts 실행 시
+    resolve(__dirname, '../../../package.json'), // npm bin 실행 시 (dist/src/watch/index.js)
+  ];
+
+  for (const path of paths) {
+    try {
+      return JSON.parse(readFileSync(path, 'utf-8')) as { version: string };
+    } catch {
+      continue;
+    }
+  }
+
+  throw new Error('package.json을 찾을 수 없습니다');
+}
+
+const _pkg = getPackageJson();
 const VERSION = `v${_pkg.version}`;
 import { lintWithFix } from '../index.js';
 import type { CcLintConfig, LintResult, FixSuggestion } from '../types.js';

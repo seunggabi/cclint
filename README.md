@@ -210,6 +210,92 @@ custom:
 
 ---
 
+## Codification Analysis (Beta)
+
+AI 커맨드를 구조화된 JSON Schema로 변환하고, 각 파라미터의 명확성을 분석합니다.
+
+```bash
+# 명확성 분석 (구조화 점수)
+cclint --suggest "성능을 개선해줄래?"
+
+# 출력 (JSON)
+{
+  "codificationScore": 40,
+  "analysis": {
+    "codifiedCount": 0,
+    "undefinedCount": 3,
+    "issues": [
+      {
+        "parameter": "metric",
+        "reason": "측정 기준 미지정",
+        "suggestion": "응답시간, CPU 사용률, 메모리 등 구체적 지표 명시"
+      }
+    ]
+  }
+}
+```
+
+**Codification Score란?**
+- **0-30**: 매우 모호 (거의 모든 파라미터 미정의)
+- **31-60**: 부분 명확 (일부 파라미터만 정의됨)
+- **61-100**: 완전 명확 (모든 필수 파라미터 정의됨)
+
+예제:
+
+**예제 1: 성능 (완전 모호)**
+```bash
+$ cclint "성능을 개선해줄래?"
+
+⚠️   "성능을 개선해줄래?" — 성능 개선의 정량화 실패
+     → 구체적 목표(응답시간 <100ms, 처리량 >1000 req/s 등)를 명시하세요
+
+Determinism Score: 9/10 🟢 — 거의 순수 함수 수준
+```
+
+**예제 2: 성능 (부분 명확)**
+```bash
+$ cclint "응답시간을 500ms 이하로 개선해줄래?"
+
+✔ 문제 없음
+
+Determinism Score: 9/10 🟢 — 거의 순수 함수 수준
+```
+
+**예제 3: 코드 품질 (완전 명확)**
+```bash
+$ cclint "순환 복잡도를 10 이하로, ESLint 0 errors로"
+
+✔ 문제 없음
+
+Determinism Score: 10/10 🟢 — 거의 순수 함수 수준
+```
+
+**예제 4: 리팩토링 (모호성 있음)**
+```bash
+$ cclint "깔끔한 코드로 리팩토링해줄래?"
+
+⚠️   language 미지정
+     → 출력 언어를 명시하세요
+⚠️   style 미지정
+     → 코드 스타일을 명시하세요
+⚠️   "깔끔한 코드로" — 정성적 목표의 정량화 실패
+
+Determinism Score: 6.5/10 🟠 — 결과가 상당히 달라질 수 있음
+```
+
+**예제 5: 테스트 (명확함)**
+```bash
+$ cclint "Jest로 80% 커버리지로 src/**/*.ts 대상으로 테스트 작성"
+
+✔ 문제 없음
+
+Determinism Score: 10/10 🟢 — 거의 순수 함수 수준
+```
+
+자세한 내용은 [Codification Analysis API](docs/codification-api.md)를 참고하세요.
+
+---
+
 ## Claude AI 통합
 
 `--suggest-print` 플래그로 Claude에게 개선안을 요청하는 명령어를 출력합니다:

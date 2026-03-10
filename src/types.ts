@@ -100,3 +100,45 @@ export const DEFAULT_CONFIG: CcLintConfig = {
     'no-rollback-plan': 'warn',
   },
 };
+
+// ─── 코드화 분석 (Codification Analysis) ──────────────────────────────────
+
+export type ParameterType = 'metric' | 'number' | 'string' | 'enum' | 'boolean' | 'array';
+
+export interface CommandParameter {
+  name: string;
+  type: ParameterType;
+  required: boolean;
+  value?: string | number | boolean | string[];
+  enum?: string[];
+  example?: string;
+  description?: string;
+  codified: boolean; // true = 값이 정의됨, false = 값이 undefined
+}
+
+export interface CommandSchema {
+  name: string;                    // "improve_performance"
+  description: string;
+  operation: string;               // "improve", "refactor", "add"
+  target: string;                  // "performance", "code", "test"
+  parameters: CommandParameter[];
+  codificationScore: number;       // 0-100: (정의된 required params / 전체 required params) * 100
+  analysis: {
+    codifiedCount: number;         // 정의된 파라미터 수
+    undefinedCount: number;        // 미정의 파라미터 수
+    issues: Array<{
+      parameter: string;
+      reason: string;
+      suggestion: string;
+    }>;
+  };
+}
+
+export interface CodificationResult {
+  command: string;
+  schema: CommandSchema;
+  determinism: {
+    score: number;
+    level: 'HIGH' | 'MEDIUM' | 'LOW';
+  };
+}

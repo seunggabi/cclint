@@ -97,8 +97,9 @@ export const IMPLICIT_PATTERNS: Array<{ pattern: RegExp; key: string }> = [
   { pattern: /기존|existing|현재|current/,         key: 'existing-state' },
   { pattern: /이전처럼|전처럼|like before/,         key: 'previous-baseline' },
   { pattern: /보통|일반적으로|normally|usually/,    key: 'convention-assumed' },
-  { pattern: /알아서|자동으로|auto(?:matically)?/,  key: 'judgment-undefined' },
+  { pattern: /알아서|자동으로|판단|상황에\s*맞게|auto(?:matically)?/,  key: 'judgment-undefined' },
   { pattern: /필요하면|if needed|필요시/,           key: 'condition-undefined' },
+  { pattern: /회의|discussion|논의|meeting|언급|mention|회의에서|discussed/,  key: 'implicit-context' },
 ];
 
 // ─── buildAST (pure function) ─────────────────────────────────────────────────

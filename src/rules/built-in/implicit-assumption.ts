@@ -17,12 +17,16 @@ const IMPLICIT_MESSAGES: Record<string, { message: string; detail: string }> = {
     detail: '팀 또는 프로젝트별 컨벤션 문서를 참조하거나 명시하세요',
   },
   '__implicit__judgment-undefined': {
-    message: '"알아서" — 판단 기준이 암묵적',
+    message: '"판단" — 판단 기준이 암묵적',
     detail: '어떤 기준으로 판단해야 할지 명시하세요',
   },
   '__implicit__condition-undefined': {
     message: '"필요하면" — 필요 조건이 정의되지 않음',
     detail: '어떤 상황에서 해당 동작을 수행해야 하는지 기준을 명시하세요',
+  },
+  '__implicit__implicit-context': {
+    message: '"회의에서 논의한" — 암묵적 문맥 참조',
+    detail: '회의 기록 링크, 결정사항, 또는 이전 대화를 명시적으로 제공하세요',
   },
 };
 

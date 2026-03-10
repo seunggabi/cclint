@@ -38,6 +38,18 @@ export const SCOPE_UNBOUNDED_KEYWORDS = new Set([
   '모든', '전체', '모두', '전부', 'all', 'every', 'entire', 'everything',
 ]);
 
+// ─── 측정/성공 기준이 불명확한 패턴 ──────────────────────────────────────
+export const MEASUREMENT_UNDEFINED_KEYWORDS = new Set([
+  '어떻게 알', '어떻게 정', '정의', '기준이', '정할 수 있을까',
+  'how do you', 'how to measure', 'how to define',
+]);
+
+// ─── 맥락 참조 패턴 ───────────────────────────────────────────────────────
+export const CONTEXT_REFERENCE_KEYWORDS = new Set([
+  '지난번', '이전에', '그때', '그 프로젝트', '그 방식', '그것', '그대로',
+  'last time', 'previously', 'before', 'that project', 'that way',
+]);
+
 export const KEYWORD_TO_DOMAIN: Record<string, string> = {
   커밋: 'commit',  commit: 'commit',
   테스트: 'test',  test: 'test',

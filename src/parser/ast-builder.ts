@@ -97,8 +97,13 @@ export const IMPLICIT_PATTERNS: Array<{ pattern: RegExp; key: string }> = [
   { pattern: /기존|existing|현재|current/,         key: 'existing-state' },
   { pattern: /이전처럼|전처럼|like before/,         key: 'previous-baseline' },
   { pattern: /보통|일반적으로|normally|usually/,    key: 'convention-assumed' },
-  { pattern: /알아서|자동으로|auto(?:matically)?/,  key: 'judgment-undefined' },
+  { pattern: /알아서|자동으로|판단|상황에\s*맞게|auto(?:matically)?/,  key: 'judgment-undefined' },
   { pattern: /필요하면|if needed|필요시/,           key: 'condition-undefined' },
+  { pattern: /회의|discussion|논의|meeting|언급|mention|회의에서|discussed/,  key: 'implicit-context' },
+  { pattern: /지난번|이전에|그때|그\s*프로젝트|그\s*방식|그대로|last\s*time|previously|before|that\s*project/,  key: 'context-reference' },
+  { pattern: /어떻게\s*알|어떻게\s*정|정의\s*없이|기준\s*없이|기준이\s*뭔지|정할\s*수\s*있을까|how\s*to\s*measure|how\s*to\s*define/,  key: 'measurement-undefined' },
+  { pattern: /너가\s*판단|너가\s*합리적|너가\s*느껴보고|판단해줄래|판단해줘|내가\s*정확히\s*모르겠어|정의가\s*없는|정의가\s*안\s*됐어/,  key: 'delegation-undefined' },
+  { pattern: /최소.*최대|빨리.*완벽|간단.*강력|최소한.*최대의|빨리.*정확|점진적.*빨리|단순.*확장성/,  key: 'impossible-tradeoff' },
 ];
 
 // ─── buildAST (pure function) ─────────────────────────────────────────────────

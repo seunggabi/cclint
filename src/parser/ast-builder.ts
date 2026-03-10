@@ -57,10 +57,21 @@ const EXTRACTORS: ConstraintExtractor[] = [
     return {};
   },
 
-  // ── 길이 제한: "72자", "72자 이내", "100자 미만", "max 72" ──────────────
+  // ── 길이 제한: "72자", "72자 이내", "max 72", "max-length=72" ─────────────
   (cmd) => {
-    const m = cmd.match(/(\d+)\s*(?:자|글자|chars?|characters?)\s*(?:이내|미만|이하|max)?|max.{0,4}(\d+)/i);
-    if (m) return { 'max-length': m[1] ?? m[2] };
+    // 형식 1: 숫자+자/글자 (한국어)
+    const m1 = cmd.match(/(\d+)\s*(?:자|글자|chars?|characters?)\s*(?:이내|미만|이하|max)?/i);
+    if (m1) return { 'max-length': m1[1] };
+
+    // 형식 2: max 숫자 (영어)
+    const m2 = cmd.match(/max.{0,4}(\d+)/i);
+    if (m2) return { 'max-length': m2[1] };
+
+    // 형식 3: max-length=숫자, max_length=숫자, maxLength=숫자, max-lenght=숫자 (key=value)
+    // typo 허용: lenght, length, -length, _length
+    const m3 = cmd.match(/max[-_]?(?:lenght|length)\s*[=:]\s*(\d+)/i);
+    if (m3) return { 'max-length': m3[1] };
+
     return {};
   },
 
